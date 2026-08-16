@@ -1,25 +1,27 @@
 const courses = require('../models/coursesModel');
 
+
 const getAllCourses = () => {
     return courses;
-};
+}
 
-const createACourse = (course) => {
-    course.id = courses.length;
-    courses.push(course);
-    return course;
-};
+const getCourseById = (req, res) => {
 
-
-const getACourseById = (courseId) => {
-    
-    const course = courses[courseId];
-    
+    console.log(courses);
+    const course = courses.find(c => c.id === parseInt(req.params.id));
     if (!course) {
         return res.status(404).send("The course you are looking for is not avaialble");
-    }
-    
-    return course
-};
 
-module.exports = {getACourseById, getAllCourses, createACourse};
+    }
+    res.send(course);
+}
+
+const createCourse = (req, res) => {
+    const course = req.body;
+    console.log("Body of the request", {course})   
+    course.id = courses.length + 1;
+    courses.push(course);
+    res.send(course);
+}
+
+module.exports = {getAllCourses, getCourseById, createCourse}

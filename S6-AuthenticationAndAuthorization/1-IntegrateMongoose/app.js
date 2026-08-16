@@ -1,23 +1,43 @@
-require('dotenv').config();
+require('dotenv').config(); 
 const express = require('express');
-const app = express();
-const logger = require('./middlewares/loggerMiddleware');
-const coursesRouter = require('./routes/coursesRoutes');
+// Step 1: Import Mongoose
 
-app.use(logger);
+const mongodb = require("mongodb");
 
-
-// mounting of routes
-app.use("/api/v1/courses", coursesRouter);
-app.use("/api/v2/courses", coursesRouter);
-
-
-app.get('/', (req, res, next) => {
-    res.send('This is BEL22');
-})
+const mongoose = require("mongoose"); 
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
-    console.log("Server is running on port:", PORT)
+
+// const 
+
+const app = express();
+app.use(express.json());
+
+const {logger} = require('./middlewares/loggerMiddleware');
+
+app.use(logger);
+
+const coursesRouter =  require('./routes/coursesRoute');
+
+app.use('/api/v1/courses', coursesRouter)
+
+
+const usersRoutes =  require('./routes/usersRoute');
+
+app.use('/api/v1/users', usersRoutes)
+
+
+app.get('/', (req, res) => {
+    res.send('Hello World');
+})
+
+const URI = process.env.MONGODB_URI;
+
+console.log(URI);
+mongoose.connect(URI).then(() => {
+    app.listen(PORT, () => {
+        console.log(`Server is running on port ${3000}`);
+    })
+    console.log("Connected")
 })
